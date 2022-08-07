@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html	xmlns:th="http://thymeleaf.org" 
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+		
+	<meta http-equiv="Content-Type" name="viewport" content="text/html; width=device-width, initial-scale=1.0, charset=UTF-8"/>
+		
+	<title>IFerno Restaurante</title>
+</head>
+
+<body>
+	<nav class="navbar navbar-light bg-light">
+		<a class="navbar-brand" href="#">
+			<img src="https://ingresso.ifpe.edu.br/static/img/ifpe-logo.svg" width="30" height="30"
+				class="d-inline-block align-top" alt="">
+			IFerno Restaurante
+		</a>
+		<div style="position: right">Seja muito bem-vindo, 
+			<span style="color: red" th:text="${clienteLogado.nome}"></span>!
+		</div>
+	</nav>
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" th:href="@{/}" style=" color:#006400">Home</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+			aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavDropdown">
+			<ul class="navbar-nav">
+				<li class="nav-item active" sec:authorize="hasAuthority('USUARIO') or hasAuthority('MODERADOR')">
+					<a class="nav-link" th:href="index">Meus Pedidos <span class="sr-only">(current)</span></a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" th:href="pratosList" sec:authorize="hasAuthority('USUARIO') or hasAuthority('MODERADOR')">Lista De Pratos </a>
+				</li>
+				<li class="nav-item" sec:authorize="hasAuthority('MODERADOR')">
+					<a class="nav-link" th:href="clientsList">Lista De Clientes </a>
+				</li>
+				<li class="nav-item" sec:authorize="hasAuthority('MODERADOR')">
+					<a class="nav-link" th:href="pedidosList">Lista De Pedidos </a>
+				</li>
+				<li class="nav-item" sec:authorize="hasAuthority('MODERADOR')">
+					<a class="nav-link" th:href="pagamentosList">Lista De Formas De Pagamento </a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">
+						Ações
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						<a class="dropdown-item" href="logout">Logout</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	
+	<br/>
+	
+	<h3>Lista de Pedidos:</h3>
+		<table class="table table-striped">
+			<thead>
+			<tr>
+				<th scope="col"><center>ID</center></th><th scope="col"><center>Data/Hora do Pedido</center></th><th scope="col"><center>Nome do Cliente</center></th><th scope="col"><center>Nome do Prato</center></th><th scope="col"><center>Valor do Pedido</center></th><th scope="col"><center>Descrição do Pedido</center></th><th scope="col"><center>Forma De Pagamento Escolhida</center></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr th:each="pedido : ${pedidos}">
+				<td><center th:text="${pedido.id}"></center></td>
+				<td><center th:text="${#temporals.format(pedido.horaDoPedido, 'dd-MM-yyyy HH:mm:ss')}"></center></td>
+				<td><center th:text="${pedido.cliente.nome}"></center></td>
+				<td><center th:text="${pedido.prato.nome}"></center></td>
+				<td><center th:text="${pedido.prato.preco}"></center></td>
+				<td><center th:text="${pedido.descricao}"></center></td>
+				<td><center th:text="${pedido.formaDePagamento.descricao}"></center></td>
+			</tr>
+			</tbody>
+		</table>
+</body>
